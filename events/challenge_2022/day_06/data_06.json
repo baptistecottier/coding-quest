@@ -1,0 +1,9 @@
+{
+  "type": "challenge",
+  "year": "2022",
+  "day": "06",
+  "test_input": "ADD A 10\nADD B 50\nCGE A B\nJIF 3\nOUT 111\nJMP 2\nOUT B\nEND\n\n",
+  "test_answer": "111",
+  "user_input": "MOV A 20\nMOV B 10\nMOV C 32\nMOV D 47\nMOV E 0\nMOV F 0\nMOV G 0\nMOV H 0\nMOV I 0\nMOV J 0\nMOV K 0\nMOV L 0\nMOV H 42\nADD I 1\nCEQ I 42\nJIF -3\nMOV I 0\nCGE A H\nJIF 20\nADD I 1\nADD B -1\nADD C 2\nMOV K 0\nADD A 1\nADD K 1\nCEQ K 10\nJIF 2\nJMP -4\nMOV J B\nMOD J 2\nCEQ J 0\nJIF 2\nADD D 15\nJMP 2\nDIV D 2\nADD A -5\nJMP -19\nADD A B\nADD A C\nADD I -1\nCGE I 0\nJIF -3\nADD A D\nADD A E\nADD H -10\nADD E B\nADD E -4\nADD F E\nADD G F\nADD E G\nADD H -1\nCGE H 0\nJIF -5\nADD A F\nOUT A\nEND",
+  "user_answer": "7745743850156157"
+}

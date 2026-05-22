@@ -1,0 +1,9 @@
+{
+  "type": "challenge",
+  "year": "2022",
+  "day": "10",
+  "test_input": "events/challenge_2022/day_10/test_input.png",
+  "test_answer": "Hello, world!",
+  "user_input": "events/challenge_2022/day_10/user_input.png",
+  "user_answer": "cake"
+}

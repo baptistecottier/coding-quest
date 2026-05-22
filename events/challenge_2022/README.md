@@ -1,0 +1,16 @@
+# 2022 Challenge
+
+_It's the year 2222. Working as an apprentice on the Earth Ship Turing, you and the crew are taking a brief rest stop on the planet Ral'Malgor. Enjoying your free time before the journey back to Earth, you embark on a quest: Find the perfect souvenir in the local alien markets!_
+
+| # | Title                                                                                             | Solution                                                                                                                          |
+|--:|:--------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------:|
+| 1 | [Engine diagnostics       ](https://pbaumgarten.com/docs/codingchallenges/puzzles/1-2-May-2022)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_01/solver_01.py) |
+| 2 | [Lottery tickets          ](https://pbaumgarten.com/docs/codingchallenges/puzzles/2-3-May-2022)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_02/solver_02.py) |
+| 3 | [Tour the stars           ](https://pbaumgarten.com/docs/codingchallenges/puzzles/3-4-May-2022)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_03/solver_03.py) |
+| 4 | [Obsessing over Connect 4 ](https://pbaumgarten.com/docs/codingchallenges/puzzles/4-5-May-2022)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_04/solver_04.py) |
+| 5 | [Spot the forgery         ](https://pbaumgarten.com/docs/codingchallenges/puzzles/5-6-May-2022)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_05/solver_05.py) |
+| 6 | [Debugging                ](https://pbaumgarten.com/docs/codingchallenges/puzzles/6-9-May-2022)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_06/solver_06.py) |
+| 7 | [Check the heat shields   ](https://pbaumgarten.com/docs/codingchallenges/puzzles/7-10-May-2022)  | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_07/solver_07.py) |
+| 8 | [Message from home        ](https://pbaumgarten.com/docs/codingchallenges/puzzles/8-11-May-2022)  | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_08/solver_08.py) |
+| 9 | [Lost in an alien market! ](https://pbaumgarten.com/docs/codingchallenges/puzzles/9-12-May-2022)  | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_09/solver_09.py) |
+| 10| [A special painting       ](https://pbaumgarten.com/docs/codingchallenges/puzzles/10-13-May-2022) | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2022/day_10/solver_10.py) |
