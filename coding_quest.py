@@ -57,12 +57,6 @@ def solve(module, data):
     return [result]
 
 
-def normalize(value):
-    if value is None:
-        return ""
-    return str(value).strip()
-
-
 def main() -> None:
     if len(sys.argv) != 4:
         usage()
@@ -86,7 +80,7 @@ def main() -> None:
 
     data = json.loads(json_path.read_text(encoding='utf-8'))
     test_input = data.get('test_input')
-    test_answer = normalize(data.get('test_answer'))
+    test_answer = str(data.get('test_answer'))
     user_input = data.get('user_input')
 
     if test_input is None:
@@ -111,19 +105,19 @@ def main() -> None:
         sys.exit(1)
 
     expected = test_answer
-    actual = normalize(computed_test[0])
+    actual = str(computed_test[0])
 
     if expected == actual:
         print('Test: ✅')
     else:
         print(f'Test: ❌ (result: {actual}, expect: {expected})')
 
-    expected_user = normalize(data.get('user_answer'))
+    expected_user = str(data.get('user_answer'))
     if computed_user:
-        user_result = normalize(computed_user[0]) if len(computed_user) == 1 else [normalize(x) for x in computed_user]
+        user_result = str(computed_user[0]) if len(computed_user) == 1 else [str(x) for x in computed_user]
         if expected_user:
             if isinstance(user_result, list):
-                user_match = all(normalize(x) == expected_user for x in user_result)
+                user_match = all(str(x) == expected_user for x in user_result)
             else:
                 user_match = user_result == expected_user
             if user_match:
