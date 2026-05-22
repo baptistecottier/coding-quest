@@ -4,8 +4,6 @@ Year: 2022
 Day: 07 - Check the heat shields
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -35,7 +33,7 @@ def preprocessing(
 def solver(
     h: int,
     occupied: list[list[tuple[int, int]]]
-) -> Iterator[int]:
+) -> int:
     """
     Calculates the total number of uncovered positions for each set of
     occupied intervals within a range of length h.
@@ -55,4 +53,4 @@ def solver(
                     e1 = e2
             uncovered -= (e1 - s1 + 1)
         total += uncovered
-    yield total
+    return total

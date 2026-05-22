@@ -4,8 +4,6 @@ Year: 2022
 Day: 02 - Lottery tickets
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -22,7 +20,7 @@ def preprocessing(
 
 def solver(
     tickets: list[list[int]]
-) -> Iterator[int]:
+) -> int:
     """
     Calculate winnings based on matches between tickets and a fixed draw.
     """
@@ -32,4 +30,4 @@ def solver(
         score = len([num for num in ticket if num in draw]) - 3
         if score >= 0:
             winnings += 10 ** score
-    yield winnings
+    return winnings

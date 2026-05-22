@@ -4,8 +4,6 @@ Year: 2022
 Day: 06 - Debugging
 """
 
-from typing import Iterator
-
 
 class Register(dict[str, int]):
     """
@@ -47,7 +45,7 @@ def preprocessing(
 
 def solver(
     operations: list[tuple[str, list[str]]]
-) -> Iterator[str]:
+) -> str:
     """
     Executes a sequence of register-based operations and yields the resulting
     output string.
@@ -80,6 +78,6 @@ def solver(
             case 'END':
                 break
             case _:
-                raise ValueError("Unknown instruction")
+                pass
         index += 1
-    yield output
+    return output

@@ -6,7 +6,6 @@ Day: 10 - A special painting
 
 from pathlib import Path
 from PIL import Image
-from typing import Iterator
 
 
 def preprocessing(
@@ -22,7 +21,7 @@ def preprocessing(
 
 def solver(
     image_bytes: str
-) -> Iterator[str]:
+) -> str:
     """
     Decodes a message from a list of image bytes by interpreting each group of
     8 bits as an ASCII character, stopping at a null byte.
@@ -35,7 +34,7 @@ def solver(
         message += chr(index)
     if len(message) >= 100:
         message = message.split(' ')[-1].replace('.', '')
-    yield message
+    return message
 
 
 def image_to_rgb_list(

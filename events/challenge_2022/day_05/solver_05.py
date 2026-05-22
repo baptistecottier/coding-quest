@@ -5,7 +5,6 @@ Day: 05 - Spot the forgery
 """
 
 from hashlib import sha256
-from typing import Iterator
 
 
 def preprocessing(
@@ -24,7 +23,7 @@ def preprocessing(
 
 def solver(
     records: list[tuple[str, int, str]]
-) -> Iterator[str]:
+) -> str:
     """
     Computes a final hash by verifying and processing a chain of
     blockchain-like records.
@@ -43,4 +42,4 @@ def solver(
             final_hash = sha256(
                 f"{d}|{n}|{final_hash}".encode('utf-8')
             ).hexdigest()
-    yield final_hash
+    return final_hash

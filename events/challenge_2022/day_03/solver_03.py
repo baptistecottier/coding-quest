@@ -4,8 +4,6 @@ Year: 2022
 Day: 03 - Tour the stars
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -22,7 +20,7 @@ def preprocessing(
 
 def solver(
     coordinates: list[list[int]]
-) -> Iterator[int]:
+) -> int:
     """
     Calculates total Euclidean distance traveled through 3D coordinates.
     """
@@ -33,4 +31,4 @@ def solver(
         delta = int(((tx - x) ** 2 + (ty - y) ** 2 + (tz - z) ** 2) ** .5)
         distance += delta
         x, y, z = tx, ty, tz
-    yield distance
+    return distance

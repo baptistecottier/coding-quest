@@ -5,7 +5,6 @@ Day: 09 - Lost in alien market
 """
 
 from collections import deque
-from typing import Iterator
 
 
 def preprocessing(
@@ -32,7 +31,7 @@ def solver(
     walls: set[tuple[int, int]],
     start: tuple[int, int],
     end: tuple[int, int]
-) -> Iterator[int]:
+) -> int:
     """
     Finds the shortest path length from start to end in a grid with obstacles.
     """
@@ -42,7 +41,7 @@ def solver(
         path = queue.popleft()
         x, y = path[-1]
         if (x, y) == end:
-            yield len(path)
+            return len(path)
             return
 
         for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:

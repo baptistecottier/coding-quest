@@ -4,8 +4,6 @@ Year: 2022
 Day: 08 - Message from home
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -19,7 +17,7 @@ def preprocessing(
 def solver(
     ciphertext: str,
     secret_key: str
-) -> Iterator[str]:
+) -> str:
     """
     Decrypts a ciphertext using Vigenere substitution cipher based on a secret
     key.
@@ -33,4 +31,4 @@ def solver(
     for i, c in enumerate(ciphertext):
         k = secret_key[i % size]
         plain += alphabet[alphabet.index(c) - alphabet.index(k) - 1]
-    yield plain
+    return plain

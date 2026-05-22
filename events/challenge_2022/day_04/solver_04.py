@@ -4,8 +4,6 @@ Year: 2022
 Day: 04 - Obsessong over Connect 4
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -22,7 +20,7 @@ def preprocessing(
 
 def solver(
     games: list[list[int]]
-) -> Iterator[int]:
+) -> int:
     """
     Solve a Connect Four game for three players, calculating the product of
     each player's wins.
@@ -41,7 +39,7 @@ def solver(
                 wins[player] += 1
                 break
             player = (player + 1) % 3
-    yield wins[0] * wins[1] * wins[2]
+    return wins[0] * wins[1] * wins[2]
 
 
 def is_winner(
