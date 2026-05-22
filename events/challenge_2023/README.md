@@ -8,8 +8,8 @@ _The year is 2223 and you are completing your apprenticeship on the Starship Tur
 | 2 | [Navigation sensor    ](https://pbaumgarten.com/docs/codingchallenges/puzzles/19-7-March-2023)    | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2023/day_02/solver_02.py) |
 | 3 | [Tic tac toe          ](https://pbaumgarten.com/docs/codingchallenges/puzzles/20-8-March-2023)    | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2023/day_03/solver_03.py) |
 | 4 | [Mayday!              ](https://pbaumgarten.com/docs/codingchallenges/puzzles/21-9-March-2023)    | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2023/day_04/solver_04.py) |
-| 5 | [Decoding pixels      ](https://pbaumgarten.com/docs/codingchallenges/puzzles/22-10-March-2023)   | |
-| 6 | [Avoid the asteroids  ](https://pbaumgarten.com/docs/codingchallenges/puzzles/23-13-March-2023)   | |
+| 5 | [Decoding pixels      ](https://pbaumgarten.com/docs/codingchallenges/puzzles/22-10-March-2023)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2023/day_05/solver_05.py) |
+| 6 | [Avoid the asteroids  ](https://pbaumgarten.com/docs/codingchallenges/puzzles/23-13-March-2023)   | [✅](https://github.com/baptistecottier/other_puzzles/blob/main/puzzles/coding%20quest/events/challenge_2023/day_06/solver_06.py) |
 | 7 | [Snakes on a spaceship](https://pbaumgarten.com/docs/codingchallenges/puzzles/24-14-March-2023)   | |
 | 8 | [Shopping expedition  ](https://pbaumgarten.com/docs/codingchallenges/puzzles/25-15-March-2023)   | |
 | 9 | [Index tree           ](https://pbaumgarten.com/docs/codingchallenges/puzzles/26-16-March-2023)   | |
