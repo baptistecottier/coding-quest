@@ -58,4 +58,4 @@ def solver(packets: list[Packet]):
             continue
         for i in range(0, len(packet.message), 2):
             plaintext += chr(int(packet.message[i:i+2], 16))
-    yield plaintext.strip()
+    return plaintext.strip()

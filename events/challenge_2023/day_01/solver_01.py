@@ -25,9 +25,9 @@ def preprocessing(
 
 def solver(
     items: dict[str, int]
-) -> Iterator[int]:
+) -> int:
     """
-    Yields the product of each item's quantity modulo 100 from the input
+    returns the product of each item's quantity modulo 100 from the input
     dictionary.
     """
-    yield prod(qty % 100 for qty in items.values())
+    return prod(qty % 100 for qty in items.values())

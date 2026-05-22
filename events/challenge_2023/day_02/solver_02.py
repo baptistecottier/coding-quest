@@ -4,8 +4,6 @@ Year: 2023
 Day: 02 - Navigation sensor
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -21,9 +19,9 @@ def preprocessing(
 
 def solver(
     records: set[int]
-) -> Iterator[int]:
+) -> int:
     """
-    Yields the rounded average of modified records with even parity from the
+    returns the rounded average of modified records with even parity from the
     input set.
     """
     expected_record = 0
@@ -34,4 +32,4 @@ def solver(
         if sum(b == '1' for b in bits) % 2 == 0:
             good_parity += 1
             expected_record += int('0' + bits[1:], 2)
-    yield round(expected_record / good_parity)
+    return round(expected_record / good_parity)

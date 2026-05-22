@@ -4,8 +4,6 @@ Year: 2023
 Day: 03 - Tic tac toe
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -23,7 +21,7 @@ def preprocessing(
 
 def solver(
     games: list[tuple[list[int], list[int]]]
-) -> Iterator[int]:
+) -> int:
     """
     Calculates the product of the number of games won by 'O', games won by 'X',
     and draws from a list of tic-tac-toe games.
@@ -47,4 +45,4 @@ def solver(
         else:
             draw += 1
 
-    yield win_o * win_x * draw
+    return win_o * win_x * draw
