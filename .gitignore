@@ -1,0 +1,9 @@
+# uv / Python build artifacts
+.venv/
+*.egg-info/
+__pycache__/
+*.pyc
+.mypy_cache/
+.python-version
+
+**/.DS_Store
