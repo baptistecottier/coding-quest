@@ -99,6 +99,7 @@ def main() -> None:
 
     computed_test = solve(solver_module, test_data)
     computed_user = solve(solver_module, user_data)
+    has_failure = False
 
     if not computed_test:
         print('Solver produced no test output.')
@@ -111,6 +112,7 @@ def main() -> None:
         print('Test: ✅')
     else:
         print(f'Test: ❌ (result: {actual}, expect: {expected})')
+        has_failure = True
 
     expected_user = str(data.get('user_answer'))
     if computed_user:
@@ -127,6 +129,7 @@ def main() -> None:
                     print(f'User: ❌ (result: {user_result}, expect: {expected_user})')
                 else:
                     print(f'User: ❌ (result: {user_result}, expect: {expected_user})')
+                has_failure = True
         else:
             if isinstance(user_result, list):
                 print('User answers:')
@@ -134,6 +137,9 @@ def main() -> None:
                     print('-', answer)
             else:
                 print('User answer:', user_result)
+
+    if has_failure:
+        sys.exit(1)
 
 
 if __name__ == '__main__':
