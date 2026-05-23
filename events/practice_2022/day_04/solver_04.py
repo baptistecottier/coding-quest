@@ -4,8 +4,6 @@ Year: 2022
 Day: 04 - Lost in transmission
 """
 
-from typing import Iterator
-
 
 def preprocessing(puzzle_input: str) -> list[list[int]]:
     """
@@ -18,7 +16,7 @@ def preprocessing(puzzle_input: str) -> list[list[int]]:
     return received_bytes
 
 
-def solver(received_bytes: list[list[int]]) -> Iterator[int]:
+def solver(received_bytes: list[list[int]]) -> int:
     """
     Identifies and yields a correction value for a single erroneous element in
     a 2D list of bytes based on row and column checksums, or yields 0 if no
@@ -37,6 +35,5 @@ def solver(received_bytes: list[list[int]]) -> Iterator[int]:
                         (received_bytes[y][x] - cs_verif)
                         * received_bytes[y][x]
                     )
-                    yield correction
-                    return
-    yield 0
+                    return correction
+    return 0

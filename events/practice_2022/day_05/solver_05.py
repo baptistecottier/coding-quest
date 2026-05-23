@@ -4,8 +4,6 @@ Year: 2022
 Day: 05 - Message from afar
 """
 
-from typing import Iterator
-
 
 def preprocessing(puzzle_input: str) -> list[str]:
     """Converts a hexadecimal string to a list of binary digits."""
@@ -15,10 +13,10 @@ def preprocessing(puzzle_input: str) -> list[str]:
     return list(m.zfill(bit_length))
 
 
-def solver(bin_message: list[str]) -> Iterator[str]:
+def solver(bin_message: list[str]) -> str:
     """
     Decodes a binary message using a custom variable-length encoding table and
-    yields the decoded string.
+    returns the decoded string.
     """
     table = {
         '0000': 'E', '0001': 'T', '0010': 'A', '0011': 'I', '0100': 'N',
@@ -40,4 +38,4 @@ def solver(bin_message: list[str]) -> Iterator[str]:
         if key == '1111111':
             break
         message += table[key]
-    yield message
+    return message

@@ -4,8 +4,6 @@ Year: 2022
 Day: 02 - Wordle with friends
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -35,7 +33,7 @@ def solver(
     absent: set[str],
     correct_pos: dict[int, str],
     wrong_pos: dict[str, int]
-) -> Iterator[str]:
+) -> str:
     """
     Find a word matching Wordle constraints.
     """
@@ -48,4 +46,4 @@ def solver(
         if any(c not in word or word[i] == c for c, i in wrong_pos.items()):
             continue
         break
-    yield word
+    return word

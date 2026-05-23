@@ -6,7 +6,6 @@ Day: 03 - Survey an asteroid belt
 
 from collections import deque
 from itertools import product
-from typing import Iterator
 
 
 def preprocessing(
@@ -21,7 +20,7 @@ def preprocessing(
         for line in puzzle_input.splitlines()]
 
 
-def solver(grid: list[list[int]]) -> Iterator[int]:
+def solver(grid: list[list[int]]) -> int:
     """
     Calculates and yields the average density of comets in the given grid.
     """
@@ -36,7 +35,7 @@ def solver(grid: list[list[int]]) -> Iterator[int]:
         if grid[y][x] != 0:
             n_comets += 1
             density += compute_asteroid_density(x, y, grid, seen)
-    yield density // n_comets
+    return density // n_comets
 
 
 def compute_asteroid_density(

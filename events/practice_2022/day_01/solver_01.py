@@ -4,8 +4,6 @@ Year: 2022
 Day: 01 - Snakes and ladders
 """
 
-from typing import Iterator
-
 
 def preprocessing(
     puzzle_input: str
@@ -35,7 +33,7 @@ def preprocessing(
 def solver(
     board: list[int],
     rolls: list[int]
-) -> Iterator[int]:
+) -> int:
     """
     Plays a game on a board, alternating between two players, until one exits
     the board, returning a score based on the winner and game duration.
@@ -51,7 +49,7 @@ def solver(
         if positions[player] == -1:
             break
         player = 1 - player
-    yield (1 + player) * int(turn)
+    return (1 + player) * int(turn)
 
 
 def play(
