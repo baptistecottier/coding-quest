@@ -6,7 +6,6 @@ Day: 01 - Inventory check
 
 from collections import defaultdict
 from math import prod
-from typing import Iterator
 
 
 def preprocessing(

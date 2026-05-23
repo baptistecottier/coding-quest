@@ -1,7 +1,7 @@
 """
 Type: Challenge
 Year: 2023
-Day: 05 - Solver 05
+Day: 05 - Decoding pixels
 """
 
 

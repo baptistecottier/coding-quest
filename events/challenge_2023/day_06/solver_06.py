@@ -1,7 +1,7 @@
 """
 Type: Challenge
 Year: 2023
-Day: 06 - Solver 06
+Day: 06 - Avoid the asteroids
 """
 
 

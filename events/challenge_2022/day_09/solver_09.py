@@ -42,10 +42,10 @@ def solver(
         x, y = path[-1]
         if (x, y) == end:
             return len(path)
-            return
 
         for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
             if ((x + dx, y + dy) not in walls and 0 <= y + dy
                     and (x + dx, y + dy) not in seen):
                 queue.append(path + [(x + dx, y + dy)])
                 seen.add((x + dx, y + dy))
+    return 0
