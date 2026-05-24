@@ -44,4 +44,4 @@ def solver(
 
     shortest = min(shortest_dp[full_mask][i] + distances[i][0]
                    for i in range(1, n))
-    return shortest + 2
+    return shortest
