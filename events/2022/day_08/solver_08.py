@@ -4,19 +4,10 @@ Year: 2022
 Day: 08 - Message from home
 """
 
-
-def preprocessing(
-    puzzle_input: str
-) -> list[str]:
-    """
-    Splits the puzzle input into lines and returns them as a tuple of strings.
-    """
-    return puzzle_input.splitlines()
-
+import re
 
 def solver(
     ciphertext: str,
-    secret_key: str
 ) -> str:
     """
     Decrypts a ciphertext using Vigenere substitution cipher based on a secret
@@ -27,8 +18,12 @@ def solver(
                 "0123456789"
                 ".,;:?! '()")
     plain = ''
+    secret_key = "Roads? Where We're Going, We Don't Need Roads."
     size = len(secret_key)
     for i, c in enumerate(ciphertext):
         k = secret_key[i % size]
         plain += alphabet[alphabet.index(c) - alphabet.index(k) - 1]
-    return plain
+    answer = re.search(r'.+answer.+\'(.+)\'', plain)
+    if answer is None:
+        raise ValueError("Incorrect decryption, answer not found")
+    return answer[1]
