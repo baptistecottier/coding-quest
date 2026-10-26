@@ -1,0 +1,35 @@
+{
+  "meta": {"timeout": 300, "machine": "Apple M3", "date": "2026-10-26", "python": "3.13.14"},
+  "events": {
+    "prequel": {
+    "1": {"status": "solved", "answer": "ok", "time": 0.0002, "date": "2026-10-26", "code": "3dc74f774d3c286e44d40cacd39ac9fcd25bcd12"},
+    "2": {"status": "solved", "answer": "ok", "time": 0.0016, "date": "2026-10-26", "code": "63e18de8f21cef783f06e75d5745ff99daeacad8"},
+    "3": {"status": "solved", "answer": "ok", "time": 0.0041, "date": "2026-10-26", "code": "3548fb7579add44b6a233ffd47331ce4a275cef3"},
+    "4": {"status": "solved", "answer": "ok", "time": 0.0, "date": "2026-10-26", "code": "ddff13b0ad625c1d995d9146ea6f752d511f1ace"},
+    "5": {"status": "solved", "answer": "ok", "time": 0.0002, "date": "2026-10-26", "code": "fd6bd992535034079584d28e710ed13f4d574d51"}
+    },
+    "2022": {
+    "1": {"status": "solved", "answer": "ok", "time": 0.0093, "date": "2026-10-26", "code": "97204d36b819f52ae8ec63f7b45b5024fb1a158f"},
+    "2": {"status": "solved", "answer": "ok", "time": 0.0024, "date": "2026-10-26", "code": "8a2ee4c5ec82c39419226806637049438db62ecd"},
+    "3": {"status": "solved", "answer": "ok", "time": 0.0, "date": "2026-10-26", "code": "f9a522afe036fc8da2dc082f3399568ce4bd31d1"},
+    "4": {"status": "solved", "answer": "ok", "time": 0.0919, "date": "2026-10-26", "code": "1c4f61e8b8ed7075763f8dbe39a19d3864f80347"},
+    "5": {"status": "solved", "answer": "ok", "time": 62.3976, "date": "2026-10-26", "code": "0522e0d7a1d27e32145696a0205587be8593d889"},
+    "6": {"status": "solved", "answer": "ok", "time": 0.0001, "date": "2026-10-26", "code": "8026c4c0c0aff76be27ced93bdb36b89a08ab500"},
+    "7": {"status": "solved", "answer": "ok", "time": 0.3757, "date": "2026-10-26", "code": "c73c02e8bc7c8c2c369993fe948d1bc02d8a614b"},
+    "8": {"status": "solved", "answer": "ok", "time": 0.0001, "date": "2026-10-26", "code": "aeb2688dd2c6fc276404dfae589716d9aecfb5be"},
+    "9": {"status": "solved", "answer": "ok", "time": 0.4166, "date": "2026-10-26", "code": "454b3f43089b859418ecf320f27378a1b85106bc"},
+    "10": {"status": "solved", "answer": "ok", "time": 0.1099, "date": "2026-10-26", "code": "d031c8d2aff6f40b45e2f18d629112e74d77b020"}
+    },
+    "2023": {
+    "1": {"status": "solved", "answer": "ok", "time": 0.002, "date": "2026-10-26", "code": "3e1d11b9e7cf6ea6c0fe134c4e6b2690205f0faa"},
+    "2": {"status": "solved", "answer": "ok", "time": 0.0025, "date": "2026-10-26", "code": "f4fb1aa366f327bfc862a60c75d329d4cf96cc10"},
+    "3": {"status": "solved", "answer": "ok", "time": 0.0049, "date": "2026-10-26", "code": "3954d135fe0bc7cdb36d6e4eb55616dca9b56cea"},
+    "4": {"status": "solved", "answer": "ok", "time": 0.0002, "date": "2026-10-26", "code": "78335223f4f6de428f5d9006bac7463f2be24db3"},
+    "5": {"status": "solved", "answer": "ok", "time": 0.001, "date": "2026-10-26", "code": "bc71fc7d04700fe19f3cae0dd4be65a070e7f2ad"},
+    "6": {"status": "solved", "answer": "ok", "time": 0.0168, "date": "2026-10-26", "code": "e628a1a4cf3989a7a64069ea739c527c69b2a64a"},
+    "7": {"status": "solved", "answer": "ok", "time": 0.0003, "date": "2026-10-26", "code": "99994b623aeaeef4a7d97902c7a7f66419dd32c0"},
+    "8": {"status": "solved", "answer": "ok", "time": 0.0093, "date": "2026-10-26", "code": "ec329e191f6f01bed68c5199d4fde51a9afe0c41"},
+    "9": {"status": "solved", "answer": "ok", "time": 0.0138, "date": "2026-10-26", "code": "d3e06843fe82d5f0c2365f5c49c3f408ea2140a6"}
+    }
+  }
+}
