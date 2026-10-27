@@ -34,18 +34,43 @@ import subprocess
 import sys
 import threading
 import time
+from collections.abc import Iterator, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 from pathlib import Path
+from typing import TypedDict, cast
 from urllib.parse import unquote, urlparse
 
-from scoreboard import CALENDAR, render
+from scoreboard import CALENDAR, Result, Results, render
 
 ROOT = Path(__file__).resolve().parent
 EVENTS = ROOT / "events"
 RESULTS = EVENTS / "benchmarks.json"
 INPUT_STORE = ROOT / ".puzzle-submitter" / "codingquest.json"
 EXTENSION = "baptistecottier.puzzle-submitter"
+
+# Inputs cached by Puzzle Submitter, by event, day and part.
+type Inputs = dict[str, dict[str, dict[str, str]]]
+# Expected answers recorded by Puzzle Submitter, by (event, day).
+type Answers = dict[tuple[str, int], str]
+# A solution to run: event, day, path, code fingerprint and expected answer.
+type Task = tuple[str, int, Path, str | None, str | None]
+
+
+class DayData(TypedDict, total=False):
+    """The fields of a day's data JSON file that the benchmark reads."""
+
+    user_input: str
+    user_answer: str | int | None
+
+
+class RunResult(TypedDict):
+    """What a solution produced when run."""
+
+    answer: str | None
+    time: float | None
+    timeout: bool
+    error: str | None
 
 
 # ===========================================================================
@@ -81,7 +106,7 @@ def has_solution(event: str, day: int) -> bool:
 # ===========================================================================
 
 
-def load_inputs() -> dict:
+def load_inputs() -> Inputs:
     """Inputs from the store shared with Puzzle Submitter, if any."""
     try:
         with open(INPUT_STORE, encoding="utf-8") as f:
@@ -90,7 +115,7 @@ def load_inputs() -> dict:
         return {}
 
 
-def load_data(event: str, day: int) -> dict:
+def load_data(event: str, day: int) -> DayData:
     """Data JSON file of a day, empty if missing."""
     try:
         return json.loads(data_path(event, day).read_text(encoding="utf-8"))
@@ -98,7 +123,7 @@ def load_data(event: str, day: int) -> dict:
         return {}
 
 
-def puzzle_input(inputs: dict, event: str, day: int) -> str | None:
+def puzzle_input(inputs: Inputs, event: str, day: int) -> str | None:
     """
     Input of a day: from the data file, which the solution was written
     against, else cached by Puzzle Submitter.
@@ -123,20 +148,20 @@ def _workspace_storages() -> list[Path]:
     ]
 
 
-def load_answers() -> dict[tuple[str, int], str]:
+def load_answers() -> Answers:
     """
     Answers recorded as correct by Puzzle Submitter for this repository, as
     {(event, day): answer}. They live in the extension's workspace state,
     inside the VS Code workspace storage of this repository. A day recorded
     as solved without its answer (true) cannot be used.
     """
-    answers: dict[tuple[str, int], str] = {}
+    answers: Answers = {}
     for storage in _workspace_storages():
         for workspace in storage.glob("*/workspace.json"):
             try:
-                folder = json.loads(workspace.read_text(encoding="utf-8")).get(
-                    "folder", ""
-                )
+                folder: str = json.loads(
+                    workspace.read_text(encoding="utf-8")
+                ).get("folder", "")
             except (OSError, json.JSONDecodeError):
                 continue
             if unquote(urlparse(folder).path).rstrip("/") != str(ROOT):
@@ -152,27 +177,26 @@ def load_answers() -> dict[tuple[str, int], str]:
                     ).fetchone()
             except sqlite3.Error:
                 continue
-            state = json.loads(row[0]) if row else {}
+            state: dict[str, object] = json.loads(row[0]) if row else {}
             for key, recorded in state.items():
                 match = re.fullmatch(
                     r"puzzleSubmitter\.progress\.codingquest\.(\w+)\.(\d+)",
                     key,
                 )
-                if (
-                    match
-                    and isinstance(recorded, dict)
-                    and isinstance(recorded.get("1"), str)
-                ):
-                    answers[(match[1], int(match[2]))] = recorded["1"]
+                if not match or not isinstance(recorded, dict):
+                    continue
+                answer = cast(dict[str, object], recorded).get("1")
+                if isinstance(answer, str):
+                    answers[(match[1], int(match[2]))] = answer
     return answers
 
 
-def expected_answer(answers: dict, event: str, day: int) -> str | None:
+def expected_answer(answers: Answers, event: str, day: int) -> str | None:
     """
     Known answer of a day: recorded by Puzzle Submitter, else from the data
     file.
     """
-    answer = answers.get((event, day))
+    answer: str | int | None = answers.get((event, day))
     if answer in (None, ""):
         answer = load_data(event, day).get("user_answer")
     return normalise(answer) if answer not in (None, "") else None
@@ -192,7 +216,7 @@ def fingerprint(path: Path) -> str | None:
 # ===========================================================================
 
 
-def normalise(answer) -> str:
+def normalise(answer: object) -> str:
     """
     String form of an answer, as it would be submitted. Trailing spaces and
     surrounding blank lines are dropped, so that a drawn answer (2023 day 5)
@@ -217,7 +241,7 @@ def child(path: str) -> None:
     os.dup2(devnull, 1)
     os.dup2(devnull, 2)
 
-    def emit(**message):
+    def emit(**message: object) -> None:
         out.write(json.dumps(message) + "\n")
         out.flush()
 
@@ -227,6 +251,7 @@ def child(path: str) -> None:
         spec = importlib.util.spec_from_file_location(
             "benchmarked_solution", path
         )
+        assert spec is not None and spec.loader is not None
         module = importlib.util.module_from_spec(spec)
         sys.modules[spec.name] = module
         spec.loader.exec_module(module)
@@ -240,14 +265,16 @@ def child(path: str) -> None:
             arity = len(inspect.signature(module.solver).parameters)
         except (TypeError, ValueError):
             arity = 1
+        result: object
         if arity > 1 and isinstance(args, (list, tuple)):
             result = module.solver(*args)
         else:
             result = module.solver(args)
         if hasattr(result, "__next__"):
-            result = list(result)
-        if isinstance(result, (list, tuple)) and len(result) == 1:
-            result = result[0]
+            result = list(cast(Iterator[object], result))
+        if isinstance(result, (list, tuple)):
+            items = cast(Sequence[object], result)
+            result = items[0] if len(items) == 1 else items
         emit(answer=normalise(result), done=time.perf_counter() - start)
     except BaseException as exc:  # pylint: disable=broad-except
         emit(error=f"{type(exc).__name__}: {str(exc)[:200]}")
@@ -257,7 +284,7 @@ def child(path: str) -> None:
     )  # do not wait for threads or processes left behind by the solution
 
 
-def run(path: Path, data: str, timeout: float) -> dict:
+def run(path: Path, data: str, timeout: float) -> RunResult:
     """Run one solution in its own process and collect its answer."""
     command = [sys.executable, __file__, "--child", str(path)]
     with subprocess.Popen(
@@ -278,7 +305,9 @@ def run(path: Path, data: str, timeout: float) -> dict:
             timed_out = True
         _kill_group(process.pid)
 
-    answer, total, error = None, None, None
+    answer: str | None = None
+    total: float | None = None
+    error: str | None = None
     for line in output.splitlines():
         try:
             message = json.loads(line)
@@ -314,7 +343,7 @@ def _kill_group(pgid: int) -> None:
 # ===========================================================================
 
 
-def grade(run_result: dict, expected: str | None) -> dict:
+def grade(run_result: RunResult, expected: str | None) -> Result:
     """Compare a run with the expected answer, keep what the board needs."""
     given = run_result["answer"]
     if given is None:
@@ -331,7 +360,7 @@ def grade(run_result: dict, expected: str | None) -> dict:
         status = "error"
     else:
         status = "wrong"
-    result = {
+    result: Result = {
         "status": status,
         "answer": answer,
         "time": round(run_result["time"], 4)
@@ -344,7 +373,7 @@ def grade(run_result: dict, expected: str | None) -> dict:
     return result
 
 
-def load_results() -> dict:
+def load_results() -> Results:
     """Previous results, so that a partial run only updates what it ran."""
     if RESULTS.is_file():
         with open(RESULTS, encoding="utf-8") as f:
@@ -352,9 +381,9 @@ def load_results() -> dict:
     return {"meta": {}, "events": {}}
 
 
-def save_results(results: dict) -> None:
+def save_results(results: Results) -> None:
     """Write the results, in calendar order, one line per day."""
-    events = []
+    events: list[str] = []
     for event in CALENDAR:
         days = results["events"].get(event)
         if not days:
@@ -374,7 +403,7 @@ def save_results(results: dict) -> None:
         )
 
 
-def describe(result: dict) -> str:
+def describe(result: Result) -> str:
     """One-line summary of a result for the console."""
     star = {"ok": "★", "unknown": "?"}.get(result["answer"], "☆")
     if result["status"] == "timeout":
@@ -398,7 +427,7 @@ def machine() -> str:
 
 
 def outdated(
-    result: dict | None, code: str | None, expected: str | None
+    result: Result | None, code: str | None, expected: str | None
 ) -> bool:
     """
     Whether a result needs a new run: never measured, measured on other code,
@@ -407,6 +436,35 @@ def outdated(
     if result is None or result.get("code") != code:
         return True
     return result["answer"] == "unknown" and expected is not None
+
+
+def collect_tasks(
+    results: Results,
+    answers: Answers,
+    targets: list[str],
+    days: list[int] | None,
+    changed: bool,
+) -> list[Task]:
+    """
+    The (event, day, path, code, expected) of every solution to run, dropping
+    from results the days whose solution no longer exists.
+    """
+    tasks: list[Task] = []
+    for event in targets or CALENDAR:
+        for day in days or range(1, days_in(event) + 1):
+            if day > days_in(event):
+                continue
+            entries = results["events"].setdefault(event, {})
+            if not has_solution(event, day):
+                entries.pop(str(day), None)
+                continue
+            path = solution_path(event, day)
+            code = fingerprint(path)
+            expected = expected_answer(answers, event, day)
+            if changed and not outdated(entries.get(str(day)), code, expected):
+                continue
+            tasks.append((event, day, path, code, expected))
+    return tasks
 
 
 def benchmark(
@@ -430,21 +488,7 @@ def benchmark(
         )
     lock = threading.Lock()
 
-    tasks = []
-    for event in targets or CALENDAR:
-        for day in days or range(1, days_in(event) + 1):
-            if day > days_in(event):
-                continue
-            entries = results["events"].setdefault(event, {})
-            if not has_solution(event, day):
-                entries.pop(str(day), None)
-                continue
-            path = solution_path(event, day)
-            code = fingerprint(path)
-            expected = expected_answer(answers, event, day)
-            if changed and not outdated(entries.get(str(day)), code, expected):
-                continue
-            tasks.append((event, day, path, code, expected))
+    tasks = collect_tasks(results, answers, targets, days, changed)
     if not tasks:
         print("Every result is up to date.")
         save_results(results)
@@ -456,11 +500,11 @@ def benchmark(
         flush=True,
     )
 
-    def task(item):
+    def task(item: Task) -> None:
         event, day, path, code, expected = item
         data = puzzle_input(inputs, event, day)
         if data is None:
-            run_result = {
+            run_result: RunResult = {
                 "answer": None,
                 "time": None,
                 "timeout": False,
@@ -469,7 +513,8 @@ def benchmark(
         else:
             run_result = run(path, data, timeout)
         with lock:
-            result = grade(run_result, expected) | {"code": code}
+            result = grade(run_result, expected)
+            result["code"] = code
             results["events"][event][str(day)] = result
             save_results(results)
             print(f"  {event:>7} day {day:>2} {describe(result)}", flush=True)
@@ -497,14 +542,14 @@ def parse_target(text: str) -> str:
 
 def parse_days(text: str) -> list[int]:
     """Parse '1-5', '1,3,5' or '1-3,7' into a sorted list of days."""
-    days = set()
+    days: set[int] = set()
     for chunk in text.split(","):
         start, _, end = chunk.strip().partition("-")
         days.update(range(int(start), int(end or start) + 1))
     return sorted(days)
 
 
-def main():
+def main() -> None:
     """Entry point."""
     if len(sys.argv) == 3 and sys.argv[1] == "--child":
         child(sys.argv[2])

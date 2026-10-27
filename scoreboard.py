@@ -15,6 +15,7 @@ import json
 import re
 import subprocess
 from pathlib import Path
+from typing import NotRequired, TypedDict
 
 ROOT = Path(__file__).resolve().parent
 EVENTS = ROOT / "events"
@@ -28,9 +29,57 @@ NBSP = " "  # keeps strips on one line, and an unsolved day an empty box
 SYMBOLS = {"fast": "█", "slow": "▓", "unsolved": NBSP}
 STATES = ("fast", "slow", "unsolved")
 
+
+class Edition(TypedDict):
+    """An event of the calendar."""
+
+    name: str
+    title: str
+    topic: int
+    page: int
+    intro: str
+    days: list[str]
+
+
+class Result(TypedDict):
+    """Result of a day in benchmarks.json."""
+
+    status: str
+    answer: str
+    time: float | None
+    date: str
+    error: NotRequired[str]
+    code: NotRequired[str | None]
+
+
+class Meta(TypedDict, total=False):
+    """Where and when the benchmark ran."""
+
+    timeout: float
+    machine: str
+    date: str
+    python: str
+
+
+class Results(TypedDict):
+    """Content of benchmarks.json: results by event, then by day."""
+
+    meta: Meta
+    events: dict[str, dict[str, Result]]
+
+
+class Summary(TypedDict):
+    """Stars, state of every day and total solving time of an event."""
+
+    stars: int
+    max: int
+    states: list[str]
+    time: float
+
+
 # Every event in order, with its archive pages (topic, page of day 1: the
 # following days are the next pages), introduction and the title of each day.
-CALENDAR = {
+CALENDAR: dict[str, Edition] = {
     "prequel": {
         "name": "Prequel",
         "title": "2022 Prequel",
@@ -127,15 +176,17 @@ def days_in(event: str) -> int:
     return len(CALENDAR[event]["days"])
 
 
-def star(result: dict | None) -> str:
+def star(result: Result | None) -> str:
     """'ok', 'unknown' (answer not known locally) or 'no'."""
-    answer = (result or {}).get("answer")
+    answer = result["answer"] if result else None
     return answer if answer in ("ok", "unknown") else "no"
 
 
-def state(result: dict | None) -> str:
+def state(result: Result | None) -> str:
     """One of 'fast', 'slow' or 'unsolved'."""
     if result is None or result["status"] != "solved":
+        return "unsolved"
+    if result["time"] is None:
         return "unsolved"
     return "fast" if result["time"] < FAST else "slow"
 
@@ -152,7 +203,7 @@ def format_time(seconds: float) -> str:
     return f"{minutes} min {seconds:02} s" if seconds else f"{minutes} min"
 
 
-def summary(event: str, days: dict) -> dict:
+def summary(event: str, days: dict[str, Result]) -> Summary:
     """Stars, state of every day and total solving time of an event."""
     results = [days.get(str(day)) for day in range(1, days_in(event) + 1)]
     states = [state(result) for result in results]
@@ -164,6 +215,8 @@ def summary(event: str, days: dict) -> dict:
             result["time"]
             for result, s in zip(results, states)
             if s != "unsolved"
+            and result is not None
+            and result["time"] is not None
         ),
     }
 
@@ -194,12 +247,12 @@ def committed_blobs() -> dict[str, str] | None:
     return {path: meta.split()[2] for meta, path in entries}
 
 
-def uncommitted(results: dict) -> set[tuple[str, str]]:
+def uncommitted(results: Results) -> set[tuple[str, str]]:
     """(event, day) of the results measured on uncommitted code."""
     blobs = committed_blobs()
     if blobs is None:
         return set()
-    flagged = set()
+    flagged: set[tuple[str, str]] = set()
     for event in events():
         for day, entry in results["events"].get(event, {}).items():
             path = f"events/{event}/day_{int(day):02}/solver_{int(day):02}.py"
@@ -243,26 +296,26 @@ def legend(timeout: float) -> str:
     )
 
 
-def environment(meta: dict) -> str:
+def environment(meta: Meta) -> str:
     """Where and when the benchmark ran."""
-    parts = []
-    if meta.get("python"):
-        parts.append(f"Python {meta['python']}")
-    if meta.get("machine"):
-        parts.append(meta["machine"])
-    if meta.get("date"):
-        date = datetime.date.fromisoformat(meta["date"])
-        parts.append(date.strftime("%-d %B %Y"))
+    parts: list[str] = []
+    if python := meta.get("python"):
+        parts.append(f"Python {python}")
+    if machine := meta.get("machine"):
+        parts.append(machine)
+    if date := meta.get("date"):
+        day = datetime.date.fromisoformat(date)
+        parts.append(day.strftime("%-d %B %Y"))
     return " · ".join(parts)
 
 
-def homepage(results: dict, flagged: set) -> str:
+def homepage(results: Results, flagged: set[tuple[str, str]]) -> str:
     """Global scoreboard: one row per event."""
     lines = [
         "| Event | Days | ★ | Time |",
         "| :-- | :-- | --: | --: |",
     ]
-    total = {"stars": 0, "max": 0, "states": [], "time": 0}
+    total: Summary = {"stars": 0, "max": 0, "states": [], "time": 0}
     for event in events():
         s = summary(event, results["events"].get(event, {}))
         time = format_time(s["time"]) if s["time"] else "–"
@@ -270,8 +323,10 @@ def homepage(results: dict, flagged: set) -> str:
             f"| [{CALENDAR[event]['title']}](events/{event}/README.md) "
             f"| {strip(s['states'])} | {s['stars']}/{s['max']} | {time} |"
         )
-        for key in total:
-            total[key] += s[key]
+        total["stars"] += s["stars"]
+        total["max"] += s["max"]
+        total["states"] += s["states"]
+        total["time"] += s["time"]
     counts = " ".join(
         f"{symbol(s)} {total['states'].count(s)}" for s in STATES
     )
@@ -304,7 +359,7 @@ def stars_cell(day_star: str) -> str:
     return {"ok": "★", "no": "☆", "unknown": "?"}[day_star]
 
 
-def time_cell(result: dict, timeout: float) -> str:
+def time_cell(result: Result, timeout: float) -> str:
     """Solving time, or why there is none."""
     if result["status"] == "timeout":
         return f"> {format_time(timeout)}"
@@ -317,7 +372,7 @@ def navigation(event: str) -> str:
     """Links to the previous event, the scoreboard and the next event."""
     order = list(CALENDAR)
     index = order.index(event)
-    links = []
+    links: list[str] = []
     if index > 0:
         previous = order[index - 1]
         links.append(
@@ -332,7 +387,7 @@ def navigation(event: str) -> str:
     return " · ".join(links)
 
 
-def summary_table(s: dict, timeout: float) -> list[str]:
+def summary_table(s: Summary, timeout: float) -> list[str]:
     """Stars, number of days in each state and solving time."""
     lines = [f"| Stars | {s['stars']}/{s['max']} |", "| :-- | --: |"]
     lines += [
@@ -350,7 +405,11 @@ def puzzle_url(event: str, day: int) -> str:
 
 
 def day_table(
-    event: str, days: dict, s: dict, timeout: float, flagged: set
+    event: str,
+    days: dict[str, Result],
+    s: Summary,
+    timeout: float,
+    flagged: set[tuple[str, str]],
 ) -> list[str]:
     """One row per day: title, symbol, star and time."""
     lines = [
@@ -374,7 +433,9 @@ def day_table(
     return lines
 
 
-def event_page(results: dict, event: str, flagged: set) -> str:
+def event_page(
+    results: Results, event: str, flagged: set[tuple[str, str]]
+) -> str:
     """Detailed page of an event: summary, then one row per day."""
     days = results["events"].get(event, {})
     s = summary(event, days)
@@ -413,7 +474,7 @@ def event_page(results: dict, event: str, flagged: set) -> str:
 def render() -> None:
     """Write the global scoreboard and every event page."""
     with open(RESULTS, encoding="utf-8") as f:
-        results = json.load(f)
+        results: Results = json.load(f)
     flagged = uncommitted(results)
 
     text = README.read_text(encoding="utf-8")

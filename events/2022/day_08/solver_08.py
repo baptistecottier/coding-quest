@@ -6,6 +6,7 @@ Day: 08 - Message from home
 
 import re
 
+
 def solver(
     ciphertext: str,
 ) -> str:
