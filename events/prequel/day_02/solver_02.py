@@ -12,7 +12,8 @@ def preprocessing(
     Process the puzzle input to extract information about guesses and results.
     """
     lines = puzzle_input.splitlines()
-    guesses = [guess.split() for guess in lines[:3]]
+    guesses_txt = "keyless YYBBYYG\nsociety YGYYYBB\nphobias BBGBGBG"
+    guesses = [guess.split() for guess in guesses_txt.splitlines()]
     absent: set[str] = set()
     correct_pos: dict[int, str] = {}
     wrong_pos: dict[str, int] = {}
