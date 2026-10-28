@@ -6,10 +6,9 @@ events/benchmarks.json and regenerate the scoreboards.
 
 Each day runs in its own process with a timeout (5 minutes by default). The
 measured time covers preprocessing and solving, not interpreter start-up or
-imports. Inputs are the user_input of the day's data JSON file, else the one
-cached by the Puzzle Submitter extension; expected answers are the ones the
-extension recorded as correct, else the user_answer of the data JSON file. A
-day with no known answer cannot be verified.
+imports. Inputs are the ones cached by the Puzzle Submitter extension and
+expected answers the ones it recorded as correct. A day with no known answer
+cannot be verified.
 
 Examples:
     uv run benchmark.py                    # every event
@@ -57,13 +56,6 @@ type Answers = dict[tuple[str, int], str]
 type Task = tuple[str, int, Path, str | None, str | None]
 
 
-class DayData(TypedDict, total=False):
-    """The fields of a day's data JSON file that the benchmark reads."""
-
-    user_input: str
-    user_answer: str | int | None
-
-
 class RunResult(TypedDict):
     """What a solution produced when run."""
 
@@ -88,11 +80,6 @@ def solution_path(event: str, day: int) -> Path:
     return EVENTS / event / f"day_{day:02}" / f"solver_{day:02}.py"
 
 
-def data_path(event: str, day: int) -> Path:
-    """Path of the data JSON file of a day."""
-    return EVENTS / event / f"day_{day:02}" / f"data_{day:02}.json"
-
-
 def has_solution(event: str, day: int) -> bool:
     """Whether a day has a solution (a file without a solver has none)."""
     path = solution_path(event, day)
@@ -115,23 +102,10 @@ def load_inputs() -> Inputs:
         return {}
 
 
-def load_data(event: str, day: int) -> DayData:
-    """Data JSON file of a day, empty if missing."""
-    try:
-        return json.loads(data_path(event, day).read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
-
-
 def puzzle_input(inputs: Inputs, event: str, day: int) -> str | None:
-    """
-    Input of a day: from the data file, which the solution was written
-    against, else cached by Puzzle Submitter.
-    """
-    text = load_data(event, day).get("user_input")
-    if not text:
-        text = inputs.get(event, {}).get(str(day), {}).get("1")
-    return str(text).rstrip("\n") if text else None
+    """Input of a day, as cached by Puzzle Submitter."""
+    text = inputs.get(event, {}).get(str(day), {}).get("1")
+    return text.rstrip("\n") if text else None
 
 
 def _workspace_storages() -> list[Path]:
@@ -192,14 +166,9 @@ def load_answers() -> Answers:
 
 
 def expected_answer(answers: Answers, event: str, day: int) -> str | None:
-    """
-    Known answer of a day: recorded by Puzzle Submitter, else from the data
-    file.
-    """
-    answer: str | int | None = answers.get((event, day))
-    if answer in (None, ""):
-        answer = load_data(event, day).get("user_answer")
-    return normalise(answer) if answer not in (None, "") else None
+    """Known answer of a day, as recorded by Puzzle Submitter."""
+    answer = answers.get((event, day))
+    return normalise(answer) if answer else None
 
 
 def fingerprint(path: Path) -> str | None:
@@ -484,7 +453,7 @@ def benchmark(
     if not answers:
         print(
             "No answer recorded by Puzzle Submitter: "
-            "only the data JSON files are used."
+            "no solution can be verified."
         )
     lock = threading.Lock()
 

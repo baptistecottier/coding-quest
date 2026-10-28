@@ -28,6 +28,6 @@ uv run benchmark.py --render           # redraw from benchmarks.json
 
 Each day runs on the personal input in its own process with a 5 minute timeout; the time
 covers preprocessing and solving. Answers are checked against the ones Puzzle Submitter
-recorded as correct, completed by the `user_answer` of the data JSON files. Results are
+recorded as correct. Results are
 stored in `events/benchmarks.json`, from which `scoreboard.py` writes the scoreboard above
 and one page per event.
