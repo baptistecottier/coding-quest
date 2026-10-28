@@ -7,6 +7,7 @@ Day: 05 - Message from afar
 
 def preprocessing(puzzle_input: str) -> list[str]:
     """Converts a hexadecimal string to a list of binary digits."""
+    puzzle_input = puzzle_input.replace(' ', '').replace('\n', '')
     bit_length = 4 * len(puzzle_input)
     n = int(puzzle_input, 16)
     m = bin(n)[2:]

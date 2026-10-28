@@ -4,12 +4,12 @@ _The year is 2223 and you are completing your apprenticeship on the Starship Tur
 
 [← 2022](../2022/README.md) · [Scoreboard](../../README.md#scoreboard) · [2024 →](../2024/README.md)
 
-| Stars | 9/10 |
+| Stars | 10/10 |
 | :-- | --: |
-| `█` solved in under 1 s | 9 |
+| `█` solved in under 1 s | 10 |
 | `▓` solved in under 5 min | 0 |
-| ` ` not solved | 1 |
-| Time of solved days | 51 ms |
+| ` ` not solved | 0 |
+| Time of solved days | 52 ms |
 
 | Day | Puzzle | Solution | Time |
 | --: | :-- | :-- | --: |
@@ -22,6 +22,6 @@ _The year is 2223 and you are completing your apprenticeship on the Starship Tur
 | 7 | [Snakes on a spaceship](https://pbaumgarten.com/course/6/topic/46/doc/307) | `█` [★](day_07/solver_07.py) | < 1 ms |
 | 8 | [Shopping expedition](https://pbaumgarten.com/course/6/topic/46/doc/308) | `█` [★](day_08/solver_08.py) | 9 ms |
 | 9 | [Index tree](https://pbaumgarten.com/course/6/topic/46/doc/309) | `█` [★](day_09/solver_09.py) | 14 ms |
-| 10 | [The route home](https://pbaumgarten.com/course/6/topic/46/doc/310) | ` ` ☆ |  |
+| 10 | [The route home](https://pbaumgarten.com/course/6/topic/46/doc/310) | `█` [★](day_10/solver_10.py) | 1 ms |
 
-<sub>`█` solved in under 1 s &emsp; `▓` solved in under 5 min &emsp; ` ` not solved<br>Python 3.13.14 · Apple M3 · 26 October 2026</sub>
+<sub>`█` solved in under 1 s &emsp; `▓` solved in under 5 min &emsp; ` ` not solved<br>Python 3.13.14 · Apple M3 · 28 October 2026</sub>
