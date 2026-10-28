@@ -219,7 +219,7 @@ def fingerprint(path: Path) -> str | None:
 def normalise(answer: object) -> str:
     """
     String form of an answer, as it would be submitted. Trailing spaces and
-    surrounding blank lines are dropped, so that a drawn answer (2023 day 5)
+    surrounding blank lines are dropped, so that a drawn answer
     compares by its pixels.
     """
     if isinstance(answer, float) and answer.is_integer():
