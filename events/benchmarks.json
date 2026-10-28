@@ -16,7 +16,7 @@
     "5": {"status": "solved", "answer": "ok", "time": 62.3976, "date": "2026-10-26", "code": "0522e0d7a1d27e32145696a0205587be8593d889"},
     "6": {"status": "solved", "answer": "ok", "time": 0.0001, "date": "2026-10-26", "code": "8026c4c0c0aff76be27ced93bdb36b89a08ab500"},
     "7": {"status": "solved", "answer": "ok", "time": 0.3757, "date": "2026-10-26", "code": "c73c02e8bc7c8c2c369993fe948d1bc02d8a614b"},
-    "8": {"status": "solved", "answer": "ok", "time": 0.0001, "date": "2026-10-28", "code": "87cba19e3dfeccb82c2b75d1a3c64a847f56297b"},
+    "8": {"status": "solved", "answer": "ok", "time": 0.0001, "date": "2026-10-28", "code": "e093673e956d81d5faf52924dd94e5e97662c71e"},
     "9": {"status": "solved", "answer": "ok", "time": 0.4166, "date": "2026-10-26", "code": "454b3f43089b859418ecf320f27378a1b85106bc"},
     "10": {"status": "solved", "answer": "ok", "time": 0.1099, "date": "2026-10-26", "code": "d031c8d2aff6f40b45e2f18d629112e74d77b020"}
     },
@@ -31,6 +31,9 @@
     "8": {"status": "solved", "answer": "ok", "time": 0.0093, "date": "2026-10-26", "code": "ec329e191f6f01bed68c5199d4fde51a9afe0c41"},
     "9": {"status": "solved", "answer": "ok", "time": 0.0138, "date": "2026-10-26", "code": "d3e06843fe82d5f0c2365f5c49c3f408ea2140a6"},
     "10": {"status": "solved", "answer": "ok", "time": 0.0014, "date": "2026-10-28", "code": "35f4d1a71b9107c5d4cec6b9da0f6d93d1aaa1f8"}
+    },
+    "2024": {
+    "1": {"status": "solved", "answer": "ok", "time": 0.0028, "date": "2026-10-28", "code": "4349e7e8e7a73bb784d7940872747456538deb01"}
     }
   }
 }
