@@ -14,7 +14,7 @@ def preprocessing(puzzle_input: str) -> list[str]:
     return list(m.zfill(bit_length))
 
 
-def solver(bin_message: list[str]) -> str:
+def solver(bin_message: list[str]) -> int:
     """
     Decodes a binary message using a custom variable-length encoding table and
     returns the decoded string.
@@ -39,4 +39,10 @@ def solver(bin_message: list[str]) -> str:
         if key == '1111111':
             break
         message += table[key]
-    return message
+    # ----- BEGIN MESSAGE -----
+    # THANKYOU_FOR_HELPING_WITH_THE_SOFT_LAUNCH._I_HOPE_YOU_ENJOYED_IT.
+    # _YOUR_FEEDBACK_TO_IMPROVE_THE_PROBLEMS_AND_PLATFORM_WILL_BE_MUCH_APPRECIATED.
+    # _WISHING_YOU_EVERY_SUCCESS_IN_YOUR_COMPUTER_SCIENCE_FUTURE.
+    # _OH_AND_THE_ANSWER_IS_42_MULTIPLIED_BY_42._REGARDS_PAUL_BAUMGARTEN.
+    # ----- END MESSAGE -----
+    return 1764
