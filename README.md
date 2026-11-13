@@ -7,13 +7,13 @@ This repository contains my solutions for the [Coding Challenges archive](https:
 
 | Event | Days | ★ | Time |
 | :-- | :-- | --: | --: |
-| [2024 Challenge](events/2024/README.md) | `█    ` `    ` | 1/9 | 3 ms |
+| [2024 Challenge](events/2024/README.md) | `█████` `████` | 9/9 | 40 ms |
 | [2023 Challenge](events/2023/README.md) | `█████` `█████` | 10/10 | 52 ms |
 | [2022 Challenge](events/2022/README.md) | `████▓` `█████` | 10/10 | 1 min 03 s |
 | [2022 Prequel](events/prequel/README.md) | `█████` | 5/5 | 6 ms |
-| **Total** | `█` 25 `▓` 1 ` ` 8 | **26/34** | 1 min 03 s |
+| **Total** | `█` 33 `▓` 1 ` ` 0 | **34/34** | 1 min 04 s |
 
-<sub>`█` solved in under 1 s &emsp; `▓` solved in under 5 min &emsp; ` ` not solved<br>Python 3.13.14 · Apple M3 · 28 October 2026</sub>
+<sub>`█` solved in under 1 s &emsp; `▓` solved in under 5 min &emsp; ` ` not solved<br>Python 3.13.14 · Apple M3 · 13 November 2026</sub>
 <!-- scoreboard:end -->
 
 ## Benchmark

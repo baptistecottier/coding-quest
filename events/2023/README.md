@@ -24,4 +24,4 @@ _The year is 2223 and you are completing your apprenticeship on the Starship Tur
 | 9 | [Index tree](https://pbaumgarten.com/course/6/topic/46/doc/309) | `█` [★](day_09/solver_09.py) | 14 ms |
 | 10 | [The route home](https://pbaumgarten.com/course/6/topic/46/doc/310) | `█` [★](day_10/solver_10.py) | 1 ms |
 
-<sub>`█` solved in under 1 s &emsp; `▓` solved in under 5 min &emsp; ` ` not solved<br>Python 3.13.14 · Apple M3 · 28 October 2026</sub>
+<sub>`█` solved in under 1 s &emsp; `▓` solved in under 5 min &emsp; ` ` not solved<br>Python 3.13.14 · Apple M3 · 13 November 2026</sub>
