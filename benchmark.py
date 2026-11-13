@@ -5,10 +5,10 @@ Benchmark every solution against the known answers, store the results in
 events/benchmarks.json and regenerate the scoreboards.
 
 Each day runs in its own process with a timeout (5 minutes by default). The
-measured time covers preprocessing and solving, not interpreter start-up or
-imports. Inputs are the ones cached by the Puzzle Submitter extension and
-expected answers the ones it recorded as correct. A day with no known answer
-cannot be verified.
+measured time covers preprocessing and solving, not interpreter start-up,
+imports, or the time a solution waits for an answer to input(). Inputs are
+the ones cached by the Puzzle Submitter extension and expected answers the
+ones it recorded as correct. A day with no known answer cannot be verified.
 
 Examples:
     uv run benchmark.py                    # every event
@@ -19,10 +19,12 @@ Examples:
 """
 
 import argparse
+import builtins
 import datetime
 import hashlib
 import importlib.util
 import inspect
+import io
 import json
 import os
 import platform
@@ -47,6 +49,8 @@ EVENTS = ROOT / "events"
 RESULTS = EVENTS / "benchmarks.json"
 INPUT_STORE = ROOT / ".puzzle-submitter" / "codingquest.json"
 EXTENSION = "baptistecottier.puzzle-submitter"
+# Environment variable giving a solution the terminal to ask questions on.
+TERMINAL = "BENCHMARK_TERMINAL"
 
 # Inputs cached by Puzzle Submitter, by event, day and part.
 type Inputs = dict[str, dict[str, dict[str, str]]]
@@ -198,17 +202,59 @@ def normalise(answer: object) -> str:
     return text if "\n" in text else text.strip()
 
 
+class Prompter:
+    """
+    Stand-in for input() while a solution runs. What the solution printed
+    since its last question is shown with the question on the terminal
+    benchmark.py runs in, and the time spent waiting for the answer is
+    added up, to be left out of the measure.
+    """
+
+    def __init__(self, device: str | None) -> None:
+        self.device = device
+        self.printed = io.StringIO()
+        self.waited = 0.0
+
+    def ask(self, prompt: object = "") -> str:
+        """Ask a question on the terminal, as input() would."""
+        if self.device is None:
+            raise EOFError("no terminal to ask the question on")
+        asked = time.perf_counter()
+        try:
+            with (
+                open(self.device, "w", encoding="utf-8") as screen,
+                open(self.device, encoding="utf-8") as keyboard,
+            ):
+                screen.write(self.printed.getvalue() + str(prompt))
+                screen.flush()
+                reply = keyboard.readline()
+        finally:
+            self.waited += time.perf_counter() - asked
+        self.printed.seek(0)
+        self.printed.truncate()
+        if not reply:
+            raise EOFError("no answer to the question")
+        return reply.removesuffix("\n")
+
+    def elapsed(self, start: float) -> float:
+        """Time since start, less the time spent waiting for answers."""
+        return time.perf_counter() - start - self.waited
+
+
 def child(path: str) -> None:
     """
     Run one solution on the input read from stdin, the way coding_quest.py
     does: preprocessing(input), then solver() on its result. The answer is
     written to stdout as a JSON line. Everything the solution prints is
-    discarded.
+    discarded, unless it then asks a question with input(): see Prompter.
     """
     out = os.fdopen(os.dup(1), "w", encoding="utf-8")
     devnull = os.open(os.devnull, os.O_WRONLY)
     os.dup2(devnull, 1)
     os.dup2(devnull, 2)
+    prompter = Prompter(os.environ.get(TERMINAL))
+    sys.stdout = prompter.printed
+    builtins.input = prompter.ask
 
     def emit(**message: object) -> None:
         out.write(json.dumps(message) + "\n")
@@ -244,7 +290,7 @@ def child(path: str) -> None:
         if isinstance(result, (list, tuple)):
             items = cast(Sequence[object], result)
             result = items[0] if len(items) == 1 else items
-        emit(answer=normalise(result), done=time.perf_counter() - start)
+        emit(answer=normalise(result), done=prompter.elapsed(start))
     except BaseException as exc:  # pylint: disable=broad-except
         emit(error=f"{type(exc).__name__}: {str(exc)[:200]}")
     out.close()
@@ -253,12 +299,25 @@ def child(path: str) -> None:
     )  # do not wait for threads or processes left behind by the solution
 
 
+def terminal() -> str | None:
+    """
+    Device of the terminal benchmark.py runs in, if any, for the solutions
+    that ask a question with input().
+    """
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        if stream.isatty():
+            return os.ttyname(stream.fileno())
+    return None
+
+
 def run(path: Path, data: str, timeout: float) -> RunResult:
     """Run one solution in its own process and collect its answer."""
     command = [sys.executable, __file__, "--child", str(path)]
+    device = terminal()
     with subprocess.Popen(
         command,
         cwd=ROOT,
+        env=os.environ | ({TERMINAL: device} if device else {}),
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
