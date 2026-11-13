@@ -1,5 +1,25 @@
 """
 Type: Challenge
 Year: 2024
-Day: 03 - Solver 03
+Day: 03 - Hotel door code
 """
+
+
+def preprocessing(puzzle_input: str):
+    """
+    Lengths of the alternating runs of unlit and lit pixels.
+    """
+    return list(map(int, puzzle_input.split()))
+
+
+def solver(numbers: list[int]):
+    """
+    Unpack the 100-pixel-wide screen from its run lengths, show it, and ask
+    for the door code it displays.
+    """
+    screen = ""
+    for i, n in enumerate(numbers):
+        screen += n * ".#"[i % 2]
+    for i in range(0, len(screen), 100):
+        print(screen[i: i + 100])
+    return input("Door code: ")
